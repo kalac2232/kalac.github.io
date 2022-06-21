@@ -1,0 +1,26 @@
+widgets:
+    # -
+    #     # Where should the widget be placed, left sidebar or right sidebar
+    #     position: left
+    #     type: profile
+    #     # Author name
+    #     author: Hanani
+    #     # Author title
+    #     author_title: Android Developer
+    #     # Author's current location
+    #     location: Beijing China
+    #     # URL or path to the avatar image
+    #     avatar: https://tuchuang-beijing.oss-cn-beijing.aliyuncs.com/35256979.jpeg
+    #     # Whether show the rounded avatar image
+    #     avatar_rounded: true
+    #     # Email address for the Gravatar
+    # # Table of contents widget configurations
+    # 标签组件
+
+
+    -
+        type: toc
+        position: left
+    -
+        type: tags
+        position: left
