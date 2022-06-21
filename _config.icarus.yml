@@ -39,10 +39,10 @@ head:
     open_graph:
         # Page title (og:title) (optional)
         # You should leave this blank for most of the time
-        title: 111
+        title: "111"
         # Page type (og:type) (optional)
         # You should leave this blank for most of the time
-        type: blog
+        type: "blog"
         # Page URL (og:url) (optional)
         # You should leave this blank for most of the time
         url: 
