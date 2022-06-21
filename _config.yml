@@ -62,7 +62,7 @@ ignore: null
 theme: icarus
 deploy:
   type: git
-  repo: https://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@github.com/kalac2232/kalac2232.github.io.git
+  repo: https://github.com/kalac2232/kalac2232.github.io.git
   branch: master
 search:
   path: search.xml
