@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>《Android开发艺术探索》笔记 - Hanani&#039;s blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Hanani"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hanani"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="第一章 Activty的生命周期和启动模式Activity的生命周期全面分析典型情况下的生命周期分析在正常的情况下，Activity会经历如下生命周期。  onCreate: 表示Activity正在被创建,是生命周期的第一个方法 onRestart: 表示Activity正在被重新启动。一般由用户从ActivityA启动ActivityB后，重新返回ActivityA触发。 onStart: 表"><meta property="og:type" content="blog"><meta property="og:title" content="111"><meta property="og:url" content="http://blog.kalac.cn/2021/03/26/%E3%80%8AAndroid%E5%BC%80%E5%8F%91%E8%89%BA%E6%9C%AF%E6%8E%A2%E7%B4%A2%E3%80%8B%E7%AC%94%E8%AE%B0/"><meta property="og:site_name" content="Hanani&#039;s blog"><meta property="og:description" content="第一章 Activty的生命周期和启动模式Activity的生命周期全面分析典型情况下的生命周期分析在正常的情况下，Activity会经历如下生命周期。  onCreate: 表示Activity正在被创建,是生命周期的第一个方法 onRestart: 表示Activity正在被重新启动。一般由用户从ActivityA启动ActivityB后，重新返回ActivityA触发。 onStart: 表"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://tuchuang-beijing.oss-cn-beijing.aliyuncs.com/2509931-1409c13efedd9b37.PNG"><meta property="og:image" content="https://tuchuang-beijing.oss-cn-beijing.aliyuncs.com/%E4%BB%BB%E5%8A%A1%E6%A0%88%E5%9B%9E%E9%80%801.png"><meta property="og:image" content="https://tuchuang-beijing.oss-cn-beijing.aliyuncs.com/%E4%BB%BB%E5%8A%A1%E6%A0%88%E5%9B%9E%E9%80%802.png"><meta property="article:published_time" content="2021-03-26T08:03:08.000Z"><meta property="article:modified_time" content="2022-06-16T03:26:17.508Z"><meta property="article:author" content="Hanani"><meta property="article:tag" content="Android"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="https://tuchuang-beijing.oss-cn-beijing.aliyuncs.com/2509931-1409c13efedd9b37.PNG"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://blog.kalac.cn/2021/03/26/%E3%80%8AAndroid%E5%BC%80%E5%8F%91%E8%89%BA%E6%9C%AF%E6%8E%A2%E7%B4%A2%E3%80%8B%E7%AC%94%E8%AE%B0/"},"headline":"Hanani's blog","image":["https://tuchuang-beijing.oss-cn-beijing.aliyuncs.com/%E4%BB%BB%E5%8A%A1%E6%A0%88%E5%9B%9E%E9%80%801.png","https://tuchuang-beijing.oss-cn-beijing.aliyuncs.com/%E4%BB%BB%E5%8A%A1%E6%A0%88%E5%9B%9E%E9%80%802.png"],"datePublished":"2021-03-26T08:03:08.000Z","dateModified":"2022-06-16T03:26:17.508Z","author":{"@type":"Person","name":"Hanani"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject"}},"description":"第一章 Activty的生命周期和启动模式Activity的生命周期全面分析典型情况下的生命周期分析在正常的情况下，Activity会经历如下生命周期。  onCreate: 表示Activity正在被创建,是生命周期的第一个方法 onRestart: 表示Activity正在被重新启动。一般由用户从ActivityA启动ActivityB后，重新返回ActivityA触发。 onStart: 表"}</script><link rel="canonical" href="http://blog.kalac.cn/2021/03/26/%E3%80%8AAndroid%E5%BC%80%E5%8F%91%E8%89%BA%E6%9C%AF%E6%8E%A2%E7%B4%A2%E3%80%8B%E7%AC%94%E8%AE%B0/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.2"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/images/logo.png" alt="Hanani&#039;s blog" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-9-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-03-26T08:03:08.000Z" title="2021/3/26 下午4:03:08">2021-03-26</time>发表</span><span class="level-item"><time dateTime="2022-06-16T03:26:17.508Z" title="2022/6/16 上午11:26:17">2022-06-16</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/Android/">Android</a></span><span class="level-item">19 分钟读完 (大约2852个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">《Android开发艺术探索》笔记</h1><div class="content"><h1 id="第一章-Activty的生命周期和启动模式"><a href="#第一章-Activty的生命周期和启动模式" class="headerlink" title="第一章 Activty的生命周期和启动模式"></a>第一章 Activty的生命周期和启动模式</h1><h2 id="Activity的生命周期全面分析"><a href="#Activity的生命周期全面分析" class="headerlink" title="Activity的生命周期全面分析"></a>Activity的生命周期全面分析</h2><h3 id="典型情况下的生命周期分析"><a href="#典型情况下的生命周期分析" class="headerlink" title="典型情况下的生命周期分析"></a>典型情况下的生命周期分析</h3><p>在正常的情况下，Activity会经历如下生命周期。</p>
+<ol>
+<li><code>onCreate</code>: <strong>表示Activity正在被创建</strong>,是生命周期的第一个方法</li>
+<li><code>onRestart</code>: <strong>表示Activity正在被重新启动</strong>。一般由用户从ActivityA启动ActivityB后，重新返回ActivityA触发。</li>
+<li><code>onStart</code>: <strong>表示Activity已经可见，但无法与用户交互</strong>。<em>（没有获取到焦点）</em></li>
+<li><code>onResume</code>: <strong>表示activity获得了焦点，用户可以进行操作</strong>。</li>
+<li><code>onPause</code>: <strong>Activity正在停止，失去了焦点，不能进行操作</strong>。此时可以做一些存储数据、停止动画等工作，但<strong>不能太耗时，会影响新Activity的显示</strong> <em>（新Activity的onResume会在老Activity的<code>onPause</code>方法后执行）</em></li>
+<li><code>onStop</code>: <strong>表示Activity即将停止，对用户来说已经不可见。</strong> 可以在此时做稍重的回收工作，也不能太耗时。<strong>一般的操作尽量在onStop中执行,不要放到onPause中</strong></li>
+<li><code>onDestory</code> : <strong>表示activity即将被销毁</strong>,是最后一个回调。可以做回收工作和最终资源的释放。</li>
+</ol>
+<span id="more"></span>
+
+<p><img src="https://tuchuang-beijing.oss-cn-beijing.aliyuncs.com/2509931-1409c13efedd9b37.PNG" alt="image"></p>
+<h3 id="异常情况下的生命周期分析"><a href="#异常情况下的生命周期分析" class="headerlink" title="异常情况下的生命周期分析"></a>异常情况下的生命周期分析</h3><ol>
+<li><p>资源相关的系统配置发生改变导致Activity被杀死并重新创建</p>
+<p> 在不对Activity进行配置时，旋转手机等操作会使系统配置发生改变，会引发Activity销毁并重新创建。</p>
+<ul>
+<li><p>销毁</p>
+<p>  当Activity开始销毁时，其onPause、onStop、onDestory均会被调用，并在<strong>onStop之前</strong>调用<code>onSaveInstanceState</code>来保存当前Activity的状态 <em>（与onPause没有明确的调用前后顺序）</em>。</p>
+</li>
+<li><p>保存</p>
+<p>  将需要保存的数据保存到<code>onSaveInstanceState</code>传入的<code>bundle</code>中。<strong>注意</strong>：<code>onSaveInstanceState</code>有俩个同名函数，通常只需重写<code>onSaveInstanceState(Bundle outState)</code>的即可，<code>onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) &#123;</code>只有在activity中配置<code>persistableMode</code>标签才会调用，此标签用于数据的持久化。</p>
+</li>
+<li><p>恢复</p>
+<p>  当Activity重建后，会将保存的bundle数据在<code>onCreate(Bundle b)</code>的参数中传入,并调用<code>onRestoreInstanceState</code>。如果要在onCreate中进行状态恢复需要进行对bundle进行判空，<strong>推荐在<code>onRestoreInstanceState</code>中进行状态的恢复</strong>,因为该方法一旦调用，其参数一定不为空。</p>
+<p>  <code>onRestoreInstanceState</code>的调用时机在<code>onStart</code>之后，与<code>onResume</code>的调用时机不能保证。</p>
+</li>
+<li><p>调用输出顺序</p>
+</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;Activity正常创建</span><br><span class="line">I&#x2F;Main2Activity: onCreate: </span><br><span class="line">I&#x2F;Main2Activity: onStart: </span><br><span class="line">I&#x2F;Main2Activity: onResume: </span><br><span class="line">&#x2F;&#x2F;屏幕旋转导致Activity开始销毁</span><br><span class="line">I&#x2F;Main2Activity: onPause: </span><br><span class="line">&#x2F;&#x2F;保存数据</span><br><span class="line">I&#x2F;Main2Activity: onSaveInstanceState:</span><br><span class="line">I&#x2F;Main2Activity: onStop: </span><br><span class="line">I&#x2F;Main2Activity: onDestroy: </span><br><span class="line">&#x2F;&#x2F;开始重建</span><br><span class="line">I&#x2F;Main2Activity: onCreate: </span><br><span class="line">I&#x2F;Main2Activity: onStart: </span><br><span class="line">&#x2F;&#x2F;恢复数据</span><br><span class="line">I&#x2F;Main2Activity: onRestoreInstanceState:</span><br><span class="line">I&#x2F;Main2Activity: onResume: </span><br></pre></td></tr></table></figure>
+
+<pre><code>系统只有在Activity即将被销毁并有机会重新显示的情况下才会调用`onSaveInstanceState`,正常退出的Activity是不会触发调用
+</code></pre>
+<ol start="2">
+<li><p>资源内存不足导致低优先级的Activity被杀死</p>
+<p> Activity优先级排序</p>
+<ol>
+<li>前台Activity – 正在和用户交互的Activity,优先级最高</li>
+<li>可见但非前台Activity – 比如Activity中弹出了一个对话框，导致Activity可见但是位于后台无法与用户直接交互。</li>
+<li>后台Activity – 已经被暂停的Activity，比如执行了onStop,优先级最低。</li>
+</ol>
+<p> 当系统系统内存不足时，系统会按照上述优先级去杀死Activity所在的进程，并在后续通过<code>onSaveInstanceState</code>和<code>onRestoreInstanceState</code>来存储和恢复数据。</p>
+</li>
+</ol>
+<h2 id="Activity的启动模式"><a href="#Activity的启动模式" class="headerlink" title="Activity的启动模式"></a>Activity的启动模式</h2><h3 id="Activity的LaunchMode"><a href="#Activity的LaunchMode" class="headerlink" title="Activity的LaunchMode"></a>Activity的LaunchMode</h3><ol>
+<li><p>standard:</p>
+<p> 标准模式，也是默认模式。<strong>每次启动一个Activity都会重新创建一个新的实例，不管这个实例是否已经存在。</strong>，一个任务栈中可以有多个实例，每个实例也可以属于不同的任务栈。在这种模式下，谁启动这个Activity,那么这个Activity就运行在启动它的那个Activity所在的栈中。</p>
+<p> <em>当用ApplicationContext去启动standard模式的Activity会报错，因为非Activity类型的Context没有任务栈，此时，需要为Activity指定<code>FLAG_ACTIVITY_NEW_TASK</code>标记位新建一个任务栈来存放这个Activity。此时，该Activity实际上使用singTask模式启动的</em></p>
+</li>
+<li><p>singleTop:</p>
+<p> 栈顶复用模式。<strong>如果新Acitivy已经位于任务栈的栈顶，那么此Activiy不会被重新创建，但是会被调用该Activity的<code>onNewIntent</code>方法</strong>。</p>
+</li>
+<li><p>singleTask:</p>
+<p> 栈内复用模式，在这种模式下，入栈时，在目标栈中如果存在此Activity实例，那么不会重新创建实例。<strong>当已经存在的实例不在栈顶时，会先将栈中实例之上的Activity全部出栈，移出任务栈，使singleTask模式的Activity位于栈顶</strong>。当栈中存在的实例在栈顶时，直接入栈，并调用<code>onNewIntent</code></p>
+</li>
+<li><p>单实例模式。该模式具有singleTask模式的所有特性外，还有这个模式的Acitivity<strong>只能单独的位于一个任务栈中</strong>。启动时，会新建一个任务栈，该任务栈只会有该Acitivity一个实例。</p>
+</li>
+</ol>
+<h3 id="任务栈回退"><a href="#任务栈回退" class="headerlink" title="任务栈回退"></a>任务栈回退</h3><p><em>在存在多个任务栈的情况下，由前台任务栈（第一个有焦点的Activity所在的任务栈）启动后台任务栈中的Activity的时候，整个后台任务栈会被切换为前台任务栈，整个栈中的Activity都会前移，之前的前台任务栈集体后移。</em></p>
+<p><strong>当启动ActivityD时的任务栈</strong></p>
+<p><img src="https://tuchuang-beijing.oss-cn-beijing.aliyuncs.com/%E4%BB%BB%E5%8A%A1%E6%A0%88%E5%9B%9E%E9%80%801.png" alt="任务栈回退1"><br><strong>当启动ActivityC时的任务栈</strong></p>
+<p><img src="https://tuchuang-beijing.oss-cn-beijing.aliyuncs.com/%E4%BB%BB%E5%8A%A1%E6%A0%88%E5%9B%9E%E9%80%802.png" alt="任务栈回退2"></p>
+<p>ActivityD被出栈的原因：++当启动ActivityC时，C处于后台任务栈中，首先将整个任务栈提到前台任务栈，变为 D -&gt; C -&gt; B -&gt; A,又因为C的启动模式为SingleTask，当不为栈顶时会将之上的Activity全部出栈。++</p>
+<h3 id="onNewIntent的调用时机"><a href="#onNewIntent的调用时机" class="headerlink" title="onNewIntent的调用时机"></a>onNewIntent的调用时机</h3><h3 id="Activity-的-Flags"><a href="#Activity-的-Flags" class="headerlink" title="Activity 的 Flags"></a>Activity 的 Flags</h3><h1 id="第三章-View的事件体系"><a href="#第三章-View的事件体系" class="headerlink" title="第三章 View的事件体系"></a>第三章 View的事件体系</h1><h2 id="View基础知识"><a href="#View基础知识" class="headerlink" title="View基础知识"></a>View基础知识</h2><h3 id="View的位置参数"><a href="#View的位置参数" class="headerlink" title="View的位置参数"></a>View的位置参数</h3><p>View的位置信息由4个顶点来决定，分别为top、left、bottom、right，这都是<strong>相对于View的父控件</strong>来说的。所以</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">width &#x3D; right - left</span><br><span class="line">height &#x3D; bottom - top</span><br></pre></td></tr></table></figure>
+
+<p>从Android3.0开始增加了x,y,translationX,translationY。其中<strong>x，y是View左上角的坐标</strong>，translationX和translationY<strong>是View左上角相对于父容器的偏移量</strong>。换算关系如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">x &#x3D; left + translationX</span><br><span class="line">y &#x3D; top + translationY</span><br></pre></td></tr></table></figure>
+
+<p>View在平移变换中，top，left表示的是原始左上角的位置信息 ，<strong>不会改变</strong>，而<strong>x，y，translationX，translationY会发生改变</strong></p>
+<h3 id="MotionEvent-和-TouchSlop"><a href="#MotionEvent-和-TouchSlop" class="headerlink" title="MotionEvent 和 TouchSlop"></a>MotionEvent 和 TouchSlop</h3><ol>
+<li><p>MotionEvent</p>
+<p> 通过MotionEvent可以获得点击事件的x，y坐标。getX&#x2F;getY获取的是相对于<strong>当前View</strong>左上角的x和y，而getRawX&#x2F;getRawY获取的是相对于<strong>手机屏幕</strong>左上角的坐标</p>
+</li>
+<li><p>TouchSlop</p>
+<p> TouchSlop为滑动的最小距离，当小于这个距离则不认为是滑动，<strong>TouchSlop是一个常量</strong>，和设备有关，在不同的设备上有可能不同，可以通过<code>ViewConfiguration,get(getContext()).getScaledTouchSlop()</code>。当处理滑动时，可以获取这个值进行判断来认为是不是滑动。</p>
+</li>
+</ol>
+<h3 id="VelocityTracker-GestureDetector-和-Scroller"><a href="#VelocityTracker-GestureDetector-和-Scroller" class="headerlink" title="VelocityTracker GestureDetector 和 Scroller"></a>VelocityTracker GestureDetector 和 Scroller</h3><ol>
+<li><p>VelocityTracker</p>
+<p> VelocityTracker用于计算滑动速度。在View的onTouchEvent中进行创建和添加监听</p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">VelocityTracker velocityTracker = VelocityTracker.obtain();</span><br><span class="line">velocityTracker.addMovement(event);</span><br></pre></td></tr></table></figure>
+<p> 初始化完成就可以获取水平方向和垂直方向的滑动速度。<strong>在获取速度之前，必须要先调用computeCurrentVelocity进行计算速度。</strong></p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;必须先调用这个</span><br><span class="line">velocityTracker.computeCurrentVelocity(1000); &#x2F;&#x2F;设置时间间隔为1000，计算在这个时间间隔中运动了多少个像素  </span><br><span class="line">Log.i(&quot;test&quot;,&quot;velocityTraker&quot;+velocityTracker.getXVelocity());  </span><br><span class="line">Log.i(&quot;test&quot;,&quot;velocityTraker&quot;+velocityTracker.getYVelocity());</span><br></pre></td></tr></table></figure>
+<p> 使用完成后，需要进行释放</p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">velocityTracker.clear();</span><br><span class="line">velocityTracker.recycle();</span><br><span class="line">velocityTracker = <span class="keyword">null</span>;</span><br></pre></td></tr></table></figure></li>
+<li><p>GestureDetector</p>
+<p> 手势检测工具，用于辅助检测用户的<strong>单击、滑动、长按、双击</strong></p>
+<p> <strong>回调接口：</strong></p>
+<ul>
+<li><p>OnGestureListener，这个Listener监听一些手势，如单击、滑动、长按等操作；</p>
+<table>
+<thead>
+<tr>
+<th align="left"><div style="width:150px">方法名</div></th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">onDown</td>
+<td align="center">手指轻轻触摸屏幕的一瞬间，由1个Action_down触发</td>
+</tr>
+<tr>
+<td align="left">onShowPress</td>
+<td align="center">手指轻轻触摸屏幕，尚未松开或拖动，由1个ACTION_DOWN触发</td>
+</tr>
+<tr>
+<td align="left">onLongPress</td>
+<td align="center">用户长按屏幕</td>
+</tr>
+<tr>
+<td align="left">onSingleTapUp</td>
+<td align="center">用户手指松开（UP事件）的时候如果没有执行onScroll()和onLongPress()这两个回调的话，就会回调这个，说明这是一个点击抬起事件，但是不能区分是否双击事件的抬起。</td>
+</tr>
+<tr>
+<td align="left">onScroll</td>
+<td align="center">手指按下并拖动，由1个ACTION_DOWN+多个ACTION_MOVE触发</td>
+</tr>
+<tr>
+<td align="left">onFling</td>
+<td align="center">用户执行快速滑动之后的回调，MOVE事件之后手松开（UP事件）那一瞬间的x或者y方向速度，如果达到一定数值（源码默认是每秒50px），就是快速滑动操作（也就是快速滑动的时候松手会有这个回调，因此基本上有onFling必然有onScroll）。</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>OnDoubleTapListener，这个Listener监听双击和单击事件。</p>
+  <div style="width:150px">方法名</div>   | 描述
+  ---|---
+  onSingleTapConfirmed | 可以确认（通过单击DOWN后300ms没有下一个DOWN事件确认）这不是一个双击事件，而是一个单击事件的时候会回调。
+  onDoubleTap | 可以确认这是一个双击事件的时候回调。
+  onDoubleTapEvent | onDoubleTap()回调之后的输入事件（DOWN、MOVE、UP）都会回调这个方法（这个方法可以实现一些双击后的控制，如让View双击后变得可拖动等）。</li>
+<li><p>OnContextClickListener 平板接入外接键盘后，鼠标&#x2F;触摸板，右键点击时候的回调。</p>
+</li>
+<li><p><strong>SimpleOnGestureListener，实现了上面三个接口的类，拥有上面三个的所有回调方法。一般会使用该接口</strong></p>
+</li>
+</ul>
+<p> 使用方式：<br> <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建GestureDetector对象</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">    mGestureDetector = <span class="keyword">new</span> GestureDetector(context, <span class="keyword">new</span> GestureDetector.SimpleOnGestureListener()&#123;</span><br><span class="line">        <span class="meta">@Override</span> <span class="comment">//按需重写相关回调</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onDown</span><span class="params">(MotionEvent e)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">super</span>.onDown(e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//接管View的onTouchEvent</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onTouchEvent</span><span class="params">(MotionEvent event)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> mGestureDetector.onTouchEvent(event);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+</li>
+</ol>
+<p>3.Scroller</p>
+<p>使用Scroller对象完成弹性滑动</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Scroller mScroller = <span class="keyword">new</span> Scroller(mContext);</span><br><span class="line"><span class="comment">//缓慢移动到指定位置</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">smoothScrollTo</span><span class="params">(<span class="keyword">int</span> destX,<span class="keyword">int</span> destY)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> scrollX = getScrollX();</span><br><span class="line">    <span class="keyword">int</span> delta = destX - scrollX;</span><br><span class="line">    <span class="comment">//1000ms内滑向destX,效果就是慢慢滑动</span></span><br><span class="line">    mScroller.startScroll(scrollX,<span class="number">0</span>,delta,<span class="number">0</span>,<span class="number">1000</span>);</span><br><span class="line">    invalidate();</span><br><span class="line">&#125; </span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">computeScroll</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(mScroller.computeScrollOffset())&#123;</span><br><span class="line">        scrollTo(mScroller.getCurrX(),mScroller.getCurrY());</span><br><span class="line">        postInvalidate();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="View的滑动"><a href="#View的滑动" class="headerlink" title="View的滑动"></a>View的滑动</h2><h3 id="使用scrollTo-x2F-scrollBy完成View的滑动"><a href="#使用scrollTo-x2F-scrollBy完成View的滑动" class="headerlink" title="使用scrollTo&#x2F;scrollBy完成View的滑动"></a>使用scrollTo&#x2F;scrollBy完成View的滑动</h3><p>Android源码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Set the scrolled position of your view. This will cause a call to</span></span><br><span class="line"><span class="comment"> * &#123;<span class="doctag">@link</span> #onScrollChanged(int, int, int, int)&#125; and the view will be</span></span><br><span class="line"><span class="comment"> * invalidated.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> x the x position to scroll to</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> y the y position to scroll to</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">scrollTo</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (mScrollX != x || mScrollY != y) &#123;</span><br><span class="line">        <span class="keyword">int</span> oldX = mScrollX;</span><br><span class="line">        <span class="keyword">int</span> oldY = mScrollY;</span><br><span class="line">        mScrollX = x;</span><br><span class="line">        mScrollY = y;</span><br><span class="line">        invalidateParentCaches();</span><br><span class="line">        onScrollChanged(mScrollX, mScrollY, oldX, oldY);</span><br><span class="line">        <span class="keyword">if</span> (!awakenScrollBars()) &#123;</span><br><span class="line">            postInvalidateOnAnimation();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Move the scrolled position of your view. This will cause a call to</span></span><br><span class="line"><span class="comment"> * &#123;<span class="doctag">@link</span> #onScrollChanged(int, int, int, int)&#125; and the view will be</span></span><br><span class="line"><span class="comment"> * invalidated.</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> x the amount of pixels to scroll by horizontally</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> y the amount of pixels to scroll by vertically</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">scrollBy</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">    scrollTo(mScrollX + x, mScrollY + y);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div><div class="article-licensing box"><div class="licensing-title"><p>《Android开发艺术探索》笔记</p><p><a href="http://blog.kalac.cn/2021/03/26/《Android开发艺术探索》笔记/">http://blog.kalac.cn/2021/03/26/《Android开发艺术探索》笔记/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>Hanani</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2021-03-26</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2022-06-16</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Android/">Android</a></div><!--!--></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3><div class="buttons is-centered"><a class="button donate" href="/" target="_blank" rel="noopener" data-type="buymeacoffee"><span class="icon is-small"><i class="fas fa-coffee"></i></span><span>送我杯咖啡</span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2021/03/26/JavaWeb%E7%AC%94%E8%AE%B0/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">JavaWeb笔记</span></a></div></nav><!--!--></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#第一章-Activty的生命周期和启动模式"><span class="level-left"><span class="level-item">1</span><span class="level-item">第一章 Activty的生命周期和启动模式</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Activity的生命周期全面分析"><span class="level-left"><span class="level-item">1.1</span><span class="level-item">Activity的生命周期全面分析</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#典型情况下的生命周期分析"><span class="level-left"><span class="level-item">1.1.1</span><span class="level-item">典型情况下的生命周期分析</span></span></a></li><li><a class="level is-mobile" href="#异常情况下的生命周期分析"><span class="level-left"><span class="level-item">1.1.2</span><span class="level-item">异常情况下的生命周期分析</span></span></a></li></ul></li><li><a class="level is-mobile" href="#Activity的启动模式"><span class="level-left"><span class="level-item">1.2</span><span class="level-item">Activity的启动模式</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#Activity的LaunchMode"><span class="level-left"><span class="level-item">1.2.1</span><span class="level-item">Activity的LaunchMode</span></span></a></li><li><a class="level is-mobile" href="#任务栈回退"><span class="level-left"><span class="level-item">1.2.2</span><span class="level-item">任务栈回退</span></span></a></li><li><a class="level is-mobile" href="#onNewIntent的调用时机"><span class="level-left"><span class="level-item">1.2.3</span><span class="level-item">onNewIntent的调用时机</span></span></a></li><li><a class="level is-mobile" href="#Activity-的-Flags"><span class="level-left"><span class="level-item">1.2.4</span><span class="level-item">Activity 的 Flags</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="#第三章-View的事件体系"><span class="level-left"><span class="level-item">2</span><span class="level-item">第三章 View的事件体系</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#View基础知识"><span class="level-left"><span class="level-item">2.1</span><span class="level-item">View基础知识</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#View的位置参数"><span class="level-left"><span class="level-item">2.1.1</span><span class="level-item">View的位置参数</span></span></a></li><li><a class="level is-mobile" href="#MotionEvent-和-TouchSlop"><span class="level-left"><span class="level-item">2.1.2</span><span class="level-item">MotionEvent 和 TouchSlop</span></span></a></li><li><a class="level is-mobile" href="#VelocityTracker-GestureDetector-和-Scroller"><span class="level-left"><span class="level-item">2.1.3</span><span class="level-item">VelocityTracker GestureDetector 和 Scroller</span></span></a></li></ul></li><li><a class="level is-mobile" href="#View的滑动"><span class="level-left"><span class="level-item">2.2</span><span class="level-item">View的滑动</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#使用scrollTo-x2F-scrollBy完成View的滑动"><span class="level-left"><span class="level-item">2.2.1</span><span class="level-item">使用scrollTo/scrollBy完成View的滑动</span></span></a></li></ul></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Android/"><span class="tag">Android</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JavaWeb/"><span class="tag">JavaWeb</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Unity/"><span class="tag">Unity</span><span class="tag">1</span></a></div></div></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/images/logo.png" alt="Hanani&#039;s blog" height="28"></a><p class="is-size-7"><span>&copy; 2022 Hanani</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

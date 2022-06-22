@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Android屏幕适配知识总结 - Hanani&#039;s blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Hanani"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hanani"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="1. 概念解释屏幕尺寸手机对角线的物理尺寸，单位：英寸（inch），1英寸&amp;#x3D;2.54cm 屏幕分辨率手机在横向、纵向上的像素点数的总和，由横向像素数 * 纵向像素数表示（1280*720），每个像素都是1px 屏幕PPI（屏幕像素密度）表示每英寸像素数，则在相同尺寸下，PPI越高，则越清晰。在PPI相同的情况下，屏幕尺寸越大，越模糊。  eg：小米8的像素密度为402PPI DPI是印刷"><meta property="og:type" content="blog"><meta property="og:title" content="111"><meta property="og:url" content="http://blog.kalac.cn/2022/06/15/Android%E5%B1%8F%E5%B9%95%E9%80%82%E9%85%8D%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/"><meta property="og:site_name" content="Hanani&#039;s blog"><meta property="og:description" content="1. 概念解释屏幕尺寸手机对角线的物理尺寸，单位：英寸（inch），1英寸&amp;#x3D;2.54cm 屏幕分辨率手机在横向、纵向上的像素点数的总和，由横向像素数 * 纵向像素数表示（1280*720），每个像素都是1px 屏幕PPI（屏幕像素密度）表示每英寸像素数，则在相同尺寸下，PPI越高，则越清晰。在PPI相同的情况下，屏幕尺寸越大，越模糊。  eg：小米8的像素密度为402PPI DPI是印刷"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="http://blog.kalac.cn/images/PPI%E8%AE%A1%E7%AE%97%E8%A7%84%E5%88%99.webp"><meta property="article:published_time" content="2022-06-15T10:04:56.000Z"><meta property="article:modified_time" content="2022-06-20T09:59:21.757Z"><meta property="article:author" content="Hanani"><meta property="article:tag" content="Android"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/images/PPI%E8%AE%A1%E7%AE%97%E8%A7%84%E5%88%99.webp"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://blog.kalac.cn/2022/06/15/Android%E5%B1%8F%E5%B9%95%E9%80%82%E9%85%8D%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/"},"headline":"Hanani's blog","image":["http://blog.kalac.cn/images/PPI%E8%AE%A1%E7%AE%97%E8%A7%84%E5%88%99.webp"],"datePublished":"2022-06-15T10:04:56.000Z","dateModified":"2022-06-20T09:59:21.757Z","author":{"@type":"Person","name":"Hanani"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject"}},"description":"1. 概念解释屏幕尺寸手机对角线的物理尺寸，单位：英寸（inch），1英寸&#x3D;2.54cm 屏幕分辨率手机在横向、纵向上的像素点数的总和，由横向像素数 * 纵向像素数表示（1280*720），每个像素都是1px 屏幕PPI（屏幕像素密度）表示每英寸像素数，则在相同尺寸下，PPI越高，则越清晰。在PPI相同的情况下，屏幕尺寸越大，越模糊。  eg：小米8的像素密度为402PPI DPI是印刷"}</script><link rel="canonical" href="http://blog.kalac.cn/2022/06/15/Android%E5%B1%8F%E5%B9%95%E9%80%82%E9%85%8D%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.2"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/images/logo.png" alt="Hanani&#039;s blog" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-9-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2022-06-15T10:04:56.000Z" title="2022/6/15 下午6:04:56">2022-06-15</time>发表</span><span class="level-item"><time dateTime="2022-06-20T09:59:21.757Z" title="2022/6/20 下午5:59:21">2022-06-20</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/Android/">Android</a></span><span class="level-item">16 分钟读完 (大约2469个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">Android屏幕适配知识总结</h1><div class="content"><h2 id="1-概念解释"><a href="#1-概念解释" class="headerlink" title="1. 概念解释"></a>1. 概念解释</h2><h3 id="屏幕尺寸"><a href="#屏幕尺寸" class="headerlink" title="屏幕尺寸"></a>屏幕尺寸</h3><p>手机对角线的物理尺寸，单位：英寸（inch），1英寸&#x3D;2.54cm</p>
+<h3 id="屏幕分辨率"><a href="#屏幕分辨率" class="headerlink" title="屏幕分辨率"></a>屏幕分辨率</h3><p>手机在横向、纵向上的像素点数的总和，由横向像素数 * 纵向像素数表示（1280*720），每个像素都是1px</p>
+<h4 id="屏幕PPI（屏幕像素密度）"><a href="#屏幕PPI（屏幕像素密度）" class="headerlink" title="屏幕PPI（屏幕像素密度）"></a>屏幕PPI（屏幕像素密度）</h4><p>表示每英寸像素数，则在相同尺寸下，PPI越高，则越清晰。在PPI相同的情况下，屏幕尺寸越大，越模糊。</p>
+<p><img src="/images/PPI%E8%AE%A1%E7%AE%97%E8%A7%84%E5%88%99.webp" alt="PPI计算规则"></p>
+<p>eg：小米8的像素密度为402PPI</p>
+<h4 id="DPI"><a href="#DPI" class="headerlink" title="DPI"></a>DPI</h4><p>是印刷业使用的单位，其表示的是打印纸上每一英寸包含的墨点数量，<em>网络上的观点是Google误用了该单位</em>。在android中可以将PPI与DPI等价看待。</p>
+<p>物理上DPI值是一个固定值，无法修改。但Android系统中的<code>densityDpi</code>参数可以通过root或adb命令修改。修改后会有一个<code>Physical density</code> 与<code>Override density</code>。</p>
+<h3 id="Density"><a href="#Density" class="headerlink" title="Density"></a>Density</h3><ul>
+<li><code>DisplayMetrics.density</code><br>  该density是为了方便px与dp的转换，额外提供了此参数，density &#x3D; densityDpi &#x2F; 160。</li>
+<li><code>adb shell wm density</code><br>  这个density其实就是dpi的概念。</li>
+</ul>
+<p><em>很多文章中的density也就是指的是dpi</em>。</p>
+<h3 id="DP"><a href="#DP" class="headerlink" title="DP"></a>DP</h3><p>密度无关像素(density-independent pixel)，与终端上的实际物理像素点无关。</p>
+<p>在dpi &#x3D; 160的设备上，1dp&#x3D;1px。当dpi提升到240时，1dp所能表示的像素点提高，扩大到(240&#x2F;160)&#x3D;1.5倍，此时1dp&#x3D;1.5dp。</p>
+<p>dp与px转换可以使用 <code>px = dp * (densityDpi / 160)</code>或者<code>px = dp * density</code>。</p>
+<h3 id="SP"><a href="#SP" class="headerlink" title="SP"></a>SP</h3><p>可缩放像素，与dp基本相同，用于字体大小设置。唯一不同就是sp会随着系统设置的字体缩放进行缩放。</p>
+<span id="more"></span>
+
+<h2 id="2-适配方案"><a href="#2-适配方案" class="headerlink" title="2.适配方案"></a>2.适配方案</h2><h5 id="为什么不使用Android的dp适配方案"><a href="#为什么不使用Android的dp适配方案" class="headerlink" title="为什么不使用Android的dp适配方案"></a>为什么不使用Android的dp适配方案</h5><blockquote>
+<p>屏幕分辨率为：1920*1080，屏幕尺寸为5吋的话，那么dpi为440。假设我们UI设计图是按屏幕宽度为360dp来设计的，那这样会存在什么问题呢？<br>在上述设备上，屏幕宽度其实为1080&#x2F;(440&#x2F;160)&#x3D;392.7dp，也就是屏幕是比设计图要宽的。这种情况下， 即使使用dp即使写了最大的dp值，也无法填充满屏幕。 同时还存在部分设备屏幕宽度不足360dp，这时就会导致按360dp宽度来开发实际显示不全的情况。</p>
+</blockquote>
+<p><strong>会导致按设计图换算过来的最大尺寸小于设备实际最大尺寸</strong></p>
+<h3 id="使用RelativeLayout、ConstraintLayout进行百分比布局"><a href="#使用RelativeLayout、ConstraintLayout进行百分比布局" class="headerlink" title="使用RelativeLayout、ConstraintLayout进行百分比布局"></a>使用RelativeLayout、ConstraintLayout进行百分比布局</h3><p>如果只考虑控件大小与位置情况，使用此方案可以解决大部分问题，但对于涉及到TextView等文字大小显示问题，依旧存在上述dp方案所存在的缺陷问题。（相同sp实际在不同手机中显示的大小不一致）</p>
+<h3 id="尺寸（size）限定符适配"><a href="#尺寸（size）限定符适配" class="headerlink" title="尺寸（size）限定符适配"></a>尺寸（size）限定符适配</h3><p>将设计图的尺寸作为基准，比如设计图为360x640，手机实际的分辨率根据这个基准宽高生成对应的尺寸文件。</p>
+<p>例如一款720x1280的手机：</p>
+<p>宽为720，将宽度分为360份，取值为x1到x360，则取值如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;dimen name&#x3D;&quot;x1&quot;&gt;2.0px&lt;&#x2F;dimen&gt;</span><br><span class="line">&lt;dimen name&#x3D;&quot;x2&quot;&gt;4.0px&lt;&#x2F;dimen&gt;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>高也同理，生成相应的y1,y2…y640的数值。</p>
+<p>将生成的dimens文件放到values-720x1280中，开发中使用R.dimens.x120，R.dimens.y60进行布局开发。</p>
+<p><strong>如果手机实际尺寸没有找到对应的尺寸限定符，就会去默认的dimens中取尺寸</strong></p>
+<p><strong>缺点：</strong></p>
+<ol>
+<li><p>需要生成大量的dimes文件。该方案为了适配及其小众的尺寸手机，会占用大量存储空间，导致增加安装包的大小。即使生成了大量的文件，也不可能覆盖不到全部的机型。</p>
+</li>
+<li><p>手机实际尺寸比例可能与设计稿不同，导致UI拉伸。设计图可能是16:9，而手机可能是16:10等其他尺寸。</p>
+</li>
+</ol>
+<h3 id="最小宽度（Smallest-width）限定符"><a href="#最小宽度（Smallest-width）限定符" class="headerlink" title="最小宽度（Smallest-width）限定符"></a>最小宽度（Smallest-width）限定符</h3><p>同尺寸限定符适配同理，通过生成大量的dimen文件期望覆盖大量机型尺寸。与尺寸限定符不同的是，尺寸限定符在没有匹配到相应的限定符时，会直接去默认的dimen中寻找尺寸，而sw限定符如果没有找到与自己相同的文件夹，会找小一点的最近dimens，这样，只要dimens文件夹生成的间隔控制的得当，UI也不会有很大的偏差，也不需要占用大量的安装包空间。</p>
+<p>系统会将屏幕较小的那一边的尺寸计算为dp，计算后的值就去匹配对应限定符。</p>
+<blockquote>
+<p>比如分辨率为1280x720，densityDpi为240dpi的设备。短边为720px，此设备的denstiy&#x3D;240&#x2F;160&#x3D;1.5，那么最小宽度即为720&#x2F;1.5&#x3D;480dp (px &#x3D; dp * density)，这样这个设备会从value-sw480dp的文件夹下取资源。</p>
+</blockquote>
+<p>而每个限定符文件夹中的dimens的生成规则和尺寸限定符相同，按照设计图的尺寸与最小宽度dp进行比例计算</p>
+<blockquote>
+<p>假如设计图的分辨率为1920x1080，设备计算出的最小宽度为sw440dp，那么设计图中的1px &#x3D; 440dp&#x2F;1080 &#x3D; 0.407dp，依据此规则依次生成其他尺寸的px所对应的dp值即可。</p>
+</blockquote>
+<p>选用最小宽度进行适配还有一个好处是布局过程中UI的宽高都使用一个边生成的尺寸进行开发，不像尺寸适配符宽取x的值，高取y的值，使用两个边的尺寸开发，当出现屏幕尺寸比例与设计图比例不相同的时候，不会被拉伸。</p>
+<p>更多的限定符见<a target="_blank" rel="noopener" href="https://developer.android.com/guide/topics/resources/providing-resources?hl=zh-cn">限定符表</a></p>
+<h3 id="头条适配方案"><a href="#头条适配方案" class="headerlink" title="头条适配方案"></a>头条适配方案</h3><p>Android原生dp方案最大的缺点是每个View的dp是写死不变的，但是手机最大的dp值随着尺寸的变化而变化。而头条方案保证了设计图中标注的最大dp值转换出的px值为都为手机的最大尺寸。</p>
+<p>头条方案通过计算屏幕尺寸与设计图的比例，计算出<code>targetDensity = screenWidth / uiWidth;</code></p>
+<p>动态修改<code>DisplayMetrics#density </code>,<code>DisplayMetrics#densityDpi</code>,参数，使得系统在将xml中的dp值转换为px时，<code>px = dp * targetDensity</code>，保证了在各个屏幕尺寸的一致性。</p>
+<p>在转换sp时，<code>DisplayMetrics#scaledDensity(字体的缩放因子)</code>需要对系统字体缩放进行进一步处理</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">targetScaledDensity &#x3D; targetDensity  * (scaledDensity &#x2F; density)</span><br></pre></td></tr></table></figure>
+
+<p>并需要在<code>Application#registerComponentCallbacks</code> 注册下 <code>onConfigurationChanged</code>监听字体缩放变化，实时更改最新的<code>targetScaledDensity</code>。</p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/d9QCoBP6kV9VSWvVldVVwA">一种极低成本的Android屏幕适配方式</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903661819133960">骚年你的屏幕适配方式该升级了!-今日头条适配方案</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/JessYanCoding/AndroidAutoSize">AndroidAutoSize</a></p>
+<h2 id="其他尺寸问题"><a href="#其他尺寸问题" class="headerlink" title="其他尺寸问题"></a>其他尺寸问题</h2><h3 id="getDimension、getDimensionPixelOffset-和-getDimensionPixelSize区别"><a href="#getDimension、getDimensionPixelOffset-和-getDimensionPixelSize区别" class="headerlink" title="getDimension、getDimensionPixelOffset 和 getDimensionPixelSize区别"></a>getDimension、getDimensionPixelOffset 和 getDimensionPixelSize区别</h3><ul>
+<li><p>相同点：返回获取某个dimen的值，如果dimen单位是dp或sp，则需要将其乘以density（屏幕密度）；如果单位是px，则不用。</p>
+</li>
+<li><p>不同点：<br><code>getDimension</code>：返回类型为float，<br><code>getDimensionPixelSize</code>：返回类型为int，由浮点型转成整型时，采用四舍五入原则。<br><code>getDimensionPixelOffset</code>：返回类型为int，由浮点型转成整型时，原则是忽略小数点部分。</p>
+</li>
+</ul>
+<h3 id="TextView中的setTextSize参数问题"><a href="#TextView中的setTextSize参数问题" class="headerlink" title="TextView中的setTextSize参数问题"></a>TextView中的setTextSize参数问题</h3><figure class="highlight java"><figcaption><span>TextView.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setTextSize</span><span class="params">(<span class="keyword">int</span> unit, <span class="keyword">float</span> size)</span> </span></span><br></pre></td></tr></table></figure>
+
+<p>其实很好理解，参数unit就是代表传入的size的类型，如果unit为<code>TypedValue.COMPLEX_UNIT_SP</code>,那么就会将传入的size按sp的方式计算（乘density），最终转化为px值。如果直接传入<code>TypedValue.COMPLEX_UNIT_PX</code>，就不需要转换为px值。</p>
+<p><strong>一个小例子：</strong></p>
+<figure class="highlight java"><figcaption><span>example.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">textView.setTextSize(TypedValue.COMPLEX_UNIT_SP,getResources().getDimension(R.dimen.fontsize))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight xml"><figcaption><span>app/src/main/res/values/dimens.xml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dimen</span> <span class="attr">name</span>=<span class="string">&quot;font1&quot;</span>&gt;</span>18sp<span class="tag">&lt;/<span class="name">dimen</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这种情况时，<code>getResources().getDimension()</code>在获取值的时候已经将18*density转换为px值后，然后再TextView中设置时又再次*density，相当于TextView最终设置到的字体大小为18*density*density。</p>
+<h2 id="附录：常见密度限定符对应表"><a href="#附录：常见密度限定符对应表" class="headerlink" title="附录：常见密度限定符对应表"></a>附录：常见密度限定符对应表</h2><table>
+<thead>
+<tr>
+<th align="left">密度限定符</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>ldpi</code></td>
+<td align="left">适用于低密度 (ldpi) 屏幕 (~ 120dpi) 的资源。</td>
+</tr>
+<tr>
+<td align="left"><code>mdpi</code></td>
+<td align="left">适用于中密度 (mdpi) 屏幕 (~ 160dpi) 的资源（这是基准密度）。</td>
+</tr>
+<tr>
+<td align="left"><code>hdpi</code></td>
+<td align="left">适用于高密度 (hdpi) 屏幕 (~ 240dpi) 的资源。</td>
+</tr>
+<tr>
+<td align="left"><code>xhdpi</code></td>
+<td align="left">适用于加高 (xhdpi) 密度屏幕 (~ 320dpi) 的资源。</td>
+</tr>
+<tr>
+<td align="left"><code>xxhdpi</code></td>
+<td align="left">适用于超超高密度 (xxhdpi) 屏幕 (~ 480dpi) 的资源。</td>
+</tr>
+<tr>
+<td align="left"><code>xxxhdpi</code></td>
+<td align="left">适用于超超超高密度 (xxxhdpi) 屏幕 (~ 640dpi) 的资源。</td>
+</tr>
+<tr>
+<td align="left"><code>nodpi</code></td>
+<td align="left">适用于所有密度的资源。这些是与密度无关的资源。无论当前屏幕的密度是多少，系统都不会缩放以此限定符标记的资源。</td>
+</tr>
+<tr>
+<td align="left"><code>tvdpi</code></td>
+<td align="left">适用于密度介于 mdpi 和 hdpi 之间的屏幕（约 213dpi）的资源。这不属于“主要”密度组。它主要用于电视，而大多数应用都不需要它。对于大多数应用而言，提供 mdpi 和 hdpi 资源便已足够，系统将视情况对其进行缩放。如果您发现有必要提供 tvdpi 资源，应按一个系数来确定其大小，即 1.33*mdpi。例如，如果某张图片在 mdpi 屏幕上的大小为 100px x 100px，那么它在 tvdpi 屏幕上的大小应该为 133px x 133px。</td>
+</tr>
+</tbody></table>
+</div><div class="article-licensing box"><div class="licensing-title"><p>Android屏幕适配知识总结</p><p><a href="http://blog.kalac.cn/2022/06/15/Android屏幕适配知识总结/">http://blog.kalac.cn/2022/06/15/Android屏幕适配知识总结/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>Hanani</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2022-06-15</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2022-06-20</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Android/">Android</a></div><!--!--></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3><div class="buttons is-centered"><a class="button donate" href="/" target="_blank" rel="noopener" data-type="buymeacoffee"><span class="icon is-small"><i class="fas fa-coffee"></i></span><span>送我杯咖啡</span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2022/06/22/%E7%B2%BE%E5%A6%99%E7%9A%84%E4%BD%8D%E8%BF%90%E7%AE%97/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">精妙的位运算</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2022/01/12/gradle%E6%9E%84%E5%BB%BA%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90(%E4%B8%80)/"><span class="level-item">Gradle构建流程分析（一）- 初始化与Task创建</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#1-概念解释"><span class="level-left"><span class="level-item">1</span><span class="level-item">1. 概念解释</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#屏幕尺寸"><span class="level-left"><span class="level-item">1.1</span><span class="level-item">屏幕尺寸</span></span></a></li><li><a class="level is-mobile" href="#屏幕分辨率"><span class="level-left"><span class="level-item">1.2</span><span class="level-item">屏幕分辨率</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#屏幕PPI（屏幕像素密度）"><span class="level-left"><span class="level-item">1.2.1</span><span class="level-item">屏幕PPI（屏幕像素密度）</span></span></a></li><li><a class="level is-mobile" href="#DPI"><span class="level-left"><span class="level-item">1.2.2</span><span class="level-item">DPI</span></span></a></li></ul></li><li><a class="level is-mobile" href="#Density"><span class="level-left"><span class="level-item">1.3</span><span class="level-item">Density</span></span></a></li><li><a class="level is-mobile" href="#DP"><span class="level-left"><span class="level-item">1.4</span><span class="level-item">DP</span></span></a></li><li><a class="level is-mobile" href="#SP"><span class="level-left"><span class="level-item">1.5</span><span class="level-item">SP</span></span></a></li></ul></li><li><a class="level is-mobile" href="#2-适配方案"><span class="level-left"><span class="level-item">2</span><span class="level-item">2.适配方案</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#使用RelativeLayout、ConstraintLayout进行百分比布局"><span class="level-left"><span class="level-item">2.1</span><span class="level-item">使用RelativeLayout、ConstraintLayout进行百分比布局</span></span></a></li><li><a class="level is-mobile" href="#尺寸（size）限定符适配"><span class="level-left"><span class="level-item">2.2</span><span class="level-item">尺寸（size）限定符适配</span></span></a></li><li><a class="level is-mobile" href="#最小宽度（Smallest-width）限定符"><span class="level-left"><span class="level-item">2.3</span><span class="level-item">最小宽度（Smallest-width）限定符</span></span></a></li><li><a class="level is-mobile" href="#头条适配方案"><span class="level-left"><span class="level-item">2.4</span><span class="level-item">头条适配方案</span></span></a></li></ul></li><li><a class="level is-mobile" href="#其他尺寸问题"><span class="level-left"><span class="level-item">3</span><span class="level-item">其他尺寸问题</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#getDimension、getDimensionPixelOffset-和-getDimensionPixelSize区别"><span class="level-left"><span class="level-item">3.1</span><span class="level-item">getDimension、getDimensionPixelOffset 和 getDimensionPixelSize区别</span></span></a></li><li><a class="level is-mobile" href="#TextView中的setTextSize参数问题"><span class="level-left"><span class="level-item">3.2</span><span class="level-item">TextView中的setTextSize参数问题</span></span></a></li></ul></li><li><a class="level is-mobile" href="#附录：常见密度限定符对应表"><span class="level-left"><span class="level-item">4</span><span class="level-item">附录：常见密度限定符对应表</span></span></a></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Android/"><span class="tag">Android</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JavaWeb/"><span class="tag">JavaWeb</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Unity/"><span class="tag">Unity</span><span class="tag">1</span></a></div></div></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/images/logo.png" alt="Hanani&#039;s blog" height="28"></a><p class="is-size-7"><span>&copy; 2022 Hanani</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>
