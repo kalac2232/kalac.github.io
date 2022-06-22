@@ -27,7 +27,7 @@ external_link:
   field: site
   exclude: ''
 filename_case: 0
-render_drafts: true
+render_drafts: false
 post_asset_folder: true
 relative_link: false
 future: true
@@ -62,7 +62,7 @@ ignore: null
 theme: icarus
 deploy:
   type: git
-  repo: https://github.com/kalac2232/kalac2232.github.io.git
+  repo: https://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@github.com/kalac2232/kalac2232.github.io.git
   branch: master
 search:
   path: search.xml
