@@ -143,7 +143,7 @@ public boolean sendMessageAtTime(Message msg, long uptimeMillis) {
 }
 
 private boolean enqueueMessage(MessageQueue queue, Message msg, long uptimeMillis) {
-    msg.target = this;
+    msg.target = this; // 将Handler自身的引用设置到msg上，当msg的处理时间到后，会分发到该Handler中处理
     if (mAsynchronous) {
         msg.setAsynchronous(true);
     }
@@ -170,8 +170,12 @@ boolean enqueueMessage(Message msg, long when) {
             // 如果头指针为空，或第一个消息的执行时间都晚于新消息，则新消息成为头指针
             msg.next = p;
             mMessages = msg;
+            needWake = mBlocked; 
         } else {
-            
+            // Inserted within the middle of the queue.  Usually we don't have to wake
+            // up the event queue unless there is a barrier at the head of the queue
+            // and the message is the earliest asynchronous message in the queue.
+            needWake = mBlocked && p.target == null && msg.isAsynchronous();
             Message prev;
             for (;;) { // 逐步向后遍历
                 prev = p;
@@ -179,9 +183,16 @@ boolean enqueueMessage(Message msg, long when) {
                 if (p == null || when < p.when) { // 找到尾节点或执行时间晚于新消息的节点，跳出循环
                     break;
                 }
+                if (needWake && p.isAsynchronous()) {
+                    needWake = false;
+                }
             }
             msg.next = p; // 加入到列表中
             prev.next = msg;
+            // 如果之前没有任务处理，进入了阻塞状态，则压入消息后需要唤醒线程
+            if (needWake) {
+                nativeWake(mPtr);
+            }
         }
 
     }
@@ -189,8 +200,72 @@ boolean enqueueMessage(Message msg, long when) {
 }
 ```
 
-#### Loop取出消息
+#### loop处理消息
 
-当Looper创建后，需要调用loop方法进入死循环模式，从`MessageQueue`取数据
+当Looper创建后，需要调用loop方法进入死循环模式，当`MessageQueue`中出现了新消息，则唤醒线程，推出一个消息，交由Looper处理。
 
-检测到消息队列不为空，则判断链表头的消息是否到达了执行时间
+```java Looper.java
+public static void loop() {
+        final Looper me = myLooper();
+        if (me == null) { // 检测线程中是否存在Looper对象
+            throw new RuntimeException("No Looper; Looper.prepare() wasn't called on this thread.");
+        }
+
+        final MessageQueue queue = me.mQueue;
+
+        for (;;) { // 进入死循环
+            Message msg = queue.next(); // might block，当存在消息后会唤醒线程，推出Message
+            if (msg == null) {
+                // No message indicates that the message queue is quitting.
+                return;
+            }
+
+            try {
+                msg.target.dispatchMessage(msg); // 交由send该Message的Handler处理
+             
+            } catch (Exception exception) {
+                throw exception;
+            } 
+
+            msg.recycleUnchecked(); // 对 Message 进行了回收
+        }
+    }
+```
+
+取出`Message`后，交由`Message`中的`target`对象处理，而这个`target`对象则就是在`Handler.enqueueMessage()`的方法中赋值的。
+
+Handler中处理这个Message。
+
+```java
+    public void dispatchMessage(@NonNull Message msg) {
+        if (msg.callback != null) { // 如果是Runnable
+            handleCallback(msg); //  则直接run。 (message.callback.run();)
+        } else {
+            // 如果是正常的消息，则调用handleMessage方法处理。
+            if (mCallback != null) {
+                // 回调到构造Handler时传入的callback中
+                if (mCallback.handleMessage(msg)) {
+                    return;
+                }
+            }
+            // 默认为空实现，如果有子类实现，则可以重写该方法处理消息。
+            handleMessage(msg);
+        }
+    }
+```
+
+
+
+#### MessageQueue推出Message机制
+
+
+
+
+
+
+
+
+
+
+
+https://mp.weixin.qq.com/s/Ylc5mPwMzWoK2CIthZy0Vw
