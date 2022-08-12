@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>详解CA证书 - Hanani&#039;s blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Hanani"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hanani"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="由于http协议的不安全性，在传输敏感数据时需要对数据进行加密处理。如果采用对称加密，使用相同的密钥对数据进行加密，密钥的保存又是一个问题。如果放到前端中存放，无论如何防护，都有被破解泄漏的可能性，而一旦泄漏，前端则需要升级新版本才能更新密钥，还需对于未升级的老版本做兼容性处理。 如果采用非对称加密，客户端每次去请求这次通信的公钥，后续的通讯内容通过这个公钥进行加密发送到服务端，服务端用自己的私钥"><meta property="og:type" content="blog"><meta property="og:title" content="111"><meta property="og:url" content="http://blog.kalac.cn/2022/07/19/ca%E8%AF%81%E4%B9%A6/"><meta property="og:site_name" content="Hanani&#039;s blog"><meta property="og:description" content="由于http协议的不安全性，在传输敏感数据时需要对数据进行加密处理。如果采用对称加密，使用相同的密钥对数据进行加密，密钥的保存又是一个问题。如果放到前端中存放，无论如何防护，都有被破解泄漏的可能性，而一旦泄漏，前端则需要升级新版本才能更新密钥，还需对于未升级的老版本做兼容性处理。 如果采用非对称加密，客户端每次去请求这次通信的公钥，后续的通讯内容通过这个公钥进行加密发送到服务端，服务端用自己的私钥"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="http://blog.kalac.cn/images/image-20220719161149012.png"><meta property="og:image" content="http://blog.kalac.cn/images/image-20220720140829584.png"><meta property="article:published_time" content="2022-07-19T07:22:52.650Z"><meta property="article:modified_time" content="2022-07-21T08:17:44.644Z"><meta property="article:author" content="Hanani"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/images/image-20220719161149012.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://blog.kalac.cn/2022/07/19/ca%E8%AF%81%E4%B9%A6/"},"headline":"Hanani's blog","image":["http://blog.kalac.cn/images/image-20220719161149012.png","http://blog.kalac.cn/images/image-20220720140829584.png"],"datePublished":"2022-07-19T07:22:52.650Z","dateModified":"2022-07-21T08:17:44.644Z","author":{"@type":"Person","name":"Hanani"},"publisher":{"@type":"Organization","logo":{"@type":"ImageObject"}},"description":"由于http协议的不安全性，在传输敏感数据时需要对数据进行加密处理。如果采用对称加密，使用相同的密钥对数据进行加密，密钥的保存又是一个问题。如果放到前端中存放，无论如何防护，都有被破解泄漏的可能性，而一旦泄漏，前端则需要升级新版本才能更新密钥，还需对于未升级的老版本做兼容性处理。 如果采用非对称加密，客户端每次去请求这次通信的公钥，后续的通讯内容通过这个公钥进行加密发送到服务端，服务端用自己的私钥"}</script><link rel="canonical" href="http://blog.kalac.cn/2022/07/19/ca%E8%AF%81%E4%B9%A6/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.2"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/images/logo.png" alt="Hanani&#039;s blog" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-9-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2022-07-19T07:22:52.650Z" title="2022/7/19 下午3:22:52">2022-07-19</time>发表</span><span class="level-item"><time dateTime="2022-07-21T08:17:44.644Z" title="2022/7/21 下午4:17:44">2022-07-21</time>更新</span><span class="level-item">20 分钟读完 (大约2940个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">详解CA证书</h1><div class="content"><p>由于http协议的不安全性，在传输敏感数据时需要对数据进行加密处理。如果采用对称加密，使用相同的密钥对数据进行加密，密钥的保存又是一个问题。如果放到前端中存放，无论如何防护，都有被破解泄漏的可能性，而一旦泄漏，前端则需要升级新版本才能更新密钥，还需对于未升级的老版本做兼容性处理。</p>
+<p>如果采用非对称加密，客户端每次去请求这次通信的公钥，后续的通讯内容通过这个公钥进行加密发送到服务端，服务端用自己的私钥进行解密获取内容。响应内容也通过私钥加密发送到客户端，客户端用公钥解密。</p>
+<p>该方案不会在客户端中存放密钥，降低了密钥泄漏的风险，但非对称加密的性能损耗较高，所以整个通信过程中会先通过非对称加密和服务器交换一个密钥。后续通过该密钥进行对称加密通信。</p>
+<p>但是非对称加密通信通过中间人攻击即可完全获取通信内容。</p>
+<p><img src="/images/image-20220719161149012.png" alt="image-20220719161149012"></p>
+<p>中间人通过截获客户端的请求，模拟新的请求向服务器请求公钥，获取到真实的公钥后，自身生成新的公钥-私钥对，将自身的公钥发送给客户端，由此通过自身的私钥解析客户端发送的内容，并将内容用真实的公钥加密后发送给服务端，并用公钥解析出服务端返回的内容。</p>
+<p>为了验证服务器的身份，防止中间人攻击，CA证书由此诞生。通过一个信任的三方机构去验证服务端的可靠性。</p>
+<span id="more"></span>
+
+<h3 id="什么是CA证书"><a href="#什么是CA证书" class="headerlink" title="什么是CA证书"></a>什么是CA证书</h3><p>CA证书是由公认权威的第三方机构颁发的，申请者将自己的身份信息、公钥提交到签发机构后，机构核实身份后生成对应的证书颁发给申请人。</p>
+<p>证书中除了包含了申请人提交的信息，并且还包含了一些CA机构的信息：申请者公钥、申请者的组织信息和个人信息、签发机构 CA 的信息、证书所采用的加密算法、有效时间、证书序列号等信息的明文，同时包含一个由明文信息加密生成的签名；</p>
+<p>服务端拥有了证书后，当客户端发起请求时，服务端首先会将证书发送给客户端，客户端去验证证书的合法性，通过后则可以取出证书的服务端的公钥进行后续的通讯。</p>
+<h4 id="证书的签发过程"><a href="#证书的签发过程" class="headerlink" title="证书的签发过程"></a>证书的签发过程</h4><ol>
+<li><p>首先 CA 会把持有者的公钥、用途、颁发者、有效时间等信息打成一个包，然后对这些信息进行 Hash 计算，得到一个 Hash 值；</p>
+</li>
+<li><p>然后 CA 会使用自己的私钥将该 Hash 值加密，生成 Certificate Signature，也就是 CA 对证书做了签名；</p>
+</li>
+<li><p>最后将 Certificate Signature 添加在文件证书上，形成最后的数字证书；</p>
+</li>
+</ol>
+<h4 id="证书的认证过程"><a href="#证书的认证过程" class="headerlink" title="证书的认证过程"></a>证书的认证过程</h4><ol start="2">
+<li>客户端会使用同样的 Hash 算法获取该证书的 Hash 值 H1；</li>
+<li>通常浏览器和操作系统中集成了 CA 的公钥信息，浏览器收到证书后可以使用 CA 的公钥解密 Certificate Signature 内容，得到一个 Hash 值 H2 ；</li>
+<li>然后比较 H1 和 H2，如果值相同，则为可信赖的证书，否则则认为证书不可信。</li>
+<li>客户端向CA发送OCSP请求验证证书的有效期、是否被吊销（或由服务端代为发送请求查询）</li>
+</ol>
+<h5 id="OCSP装订"><a href="#OCSP装订" class="headerlink" title="OCSP装订"></a><strong>OCSP装订</strong></h5><p>OCSP装订（英语：OCSP Stapling），正式名称为TLS证书状态查询扩展，可代替在线证书状态协议（OCSP）来查询X.509证书的状态。服务器在TLS握手时发送事先缓存的OCSP响应，用户只需验证该响应的有效性而不用再向数字证书认证机构（CA）发送请求。</p>
+<p>OCSP装订解决了在线证书协议中的大多数问题。CA给网站颁发证书之后，网站的每个访问者都会进行OCSP查询。因此使用在线证书协议时，高并发的请求会给CA的服务器带来很大的压力。同时由于必须和CA建立连接，OCSP查询还会影响浏览器打开页面的速度并泄漏用户隐私。此外，当OCSP查询无法得到响应时，浏览器必须选择是否在无法确认证书状态的情况下继续连接，造成安全性和可用性二选一的困局。</p>
+<h3 id="认证链"><a href="#认证链" class="headerlink" title="认证链"></a>认证链</h3><p>实际使用过程中，服务器证书的签发工作不是由根证书直接完成，而是可能由二级或更深层级的证书进行签发。这些证书也可称为中间证书。中间证书依次认证，最终都是由根证书认证。</p>
+<p><img src="/images/image-20220720140829584.png" alt="image-20220720140829584"></p>
+<p>在认证过程中，只是多了几次认证过程，只要最后能找到一个操作系统信任的证书所认证的证书，则说明该认证链可靠。</p>
+<p>认证链存在的优势：</p>
+<ol>
+<li>减少根证书结构的管理工作量，可以更高效的进行证书的审核与签发;</li>
+<li>根证书一般内置在客户端（浏览器或操作系统）中，私钥一般离线存储，一旦私钥泄露，则吊销过程非常困难，无法及时补救。中间证书结构的私钥泄露，则可以快速在线吊销，并重新为用户签发新的证书;</li>
+</ol>
+<h3 id="交叉认证"><a href="#交叉认证" class="headerlink" title="交叉认证"></a>交叉认证</h3><p>一个CA机构将自己的证书交由其他CA机构进行签名认证的过程叫做交叉认证，生成的证书为交叉证书。使用交叉证书认证颁发的证书可以通过两个CA的认证。</p>
+<p>CA机构在更换根证书时期会使用这种方式，在新的根证书还未完全布置到操作系统中时，暂时使用其他的CA机构进行认证。当部署完成后，后续的新证书颁发都使用自己的根证书认证的证书进行签名。</p>
+<h3 id="不同级别的CA证书"><a href="#不同级别的CA证书" class="headerlink" title="不同级别的CA证书"></a>不同级别的CA证书</h3><ul>
+<li><p>DV</p>
+<p>最基础的SSL证书类别：DV（Domain Validaion） SSL证书，俗称“域名验证型SSL证书”。这种 SSL证书只具备最基本的 HTTPS 加密作用。不涉及到SSL证书的使用方身份验证，因此具有颁发快，成本低的优点。这种证书满足了大量的个人站长对 https 的加密需求。同时也是各个小微企业从节约经营成本的角度出发可以选择的SSL证书类型。</p>
+</li>
+<li><p>DV</p>
+<p>普通的组织验证证书：OV（Organization Validation） SSL证书。俗称“组织验证型SSL证书”或者“企业性SSL证书”。这类证书从加密和身份认证两方面对网站进行了一个提高。申请这类证书需要具有组织身份，例如公司、政府、学校、医院等各类单位组织。证书签发机构在签发证书之前，会对这个组织身份的真实性进行验证，确保组织的真实存在以及确认该组织本身确实是在申请SSL证书，防止冒名顶替。这种 OV SSL证书的字段里面包含了使用证书的单位名称。</p>
+</li>
+<li><p>OV</p>
+<p>扩展验证类SSL证书：EV （Extended Validation）SSL证书。这类SSL证书俗称“增强型SSL证书”或者“扩展验证型SSL证书”。这种SSL证书对申请者身份做了更加严格的审核，也正因如此，很多浏览器对装有 EV SSL证书的网站进行了特别的标注：例如在浏览器地址栏直接显示单位名称，或者在浏览器地址栏点击小锁标志后显示单位名称</p>
+</li>
+</ul>
+<h3 id="自签证书"><a href="#自签证书" class="headerlink" title="自签证书"></a>自签证书</h3><p>SSL证书并不一定非要权威的CA机构去签发，自己也可以用自己的私钥去签发一个证书，这种证书就是自签名证书。因为自签名证书并没有通过CA机构认证，也没有内置于操作系统中，所以在浏览器访问过程中会收到“不安全”警告。</p>
+<p>自签名证书的优势：</p>
+<ul>
+<li>免费，每个人都可以通过Openssl生成证书，在一定的使用场景中可以减少预算。</li>
+<li>随时签发，不需要等待三分机构审核资质。</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li><strong>不受浏览器信任</strong>。</li>
+<li>吊销难。</li>
+<li>易被伪装，在浏览器环境无法防范中间人攻击，也就失去了证书的意义。</li>
+</ul>
+<p>自签名证书也可以用于中间人攻击，自行生成一个与受害者公开信息完全相同的证书进行攻击。</p>
+<h3 id="HTTPS的中间人攻击"><a href="#HTTPS的中间人攻击" class="headerlink" title="HTTPS的中间人攻击"></a>HTTPS的中间人攻击</h3><p>严格意义上HTTPS并不存在中间人攻击，但部分应用开发者忽视证书的校验，或者对非法证书处理不当，导致依旧可以进行攻击。</p>
+<p>攻击方式：</p>
+<ol>
+<li>在操作系统中也安装中间人的根证书，</li>
+<li>将请求代理转发到拥有被认证过CA认证过的服务器上转发请求。</li>
+</ol>
+<p>上述攻击手段都是通过替换CA证书的方式进行攻击，浏览器会识别出风险并警告。在网站开启HSTS（HTTP严格传输安全）后，chrome浏览器会拦截请求，无法访问，而一部分其他浏览器还是可以手动忽视风险，直接访问，将自己的信息暴露到中间人网络当中。</p>
+<p><strong>Android应用开发者如果自定义的X509TrustManager不校验证书，或实现的自定义HostnameVerifier不校验域名接受任意域名，或使用setHostnameVerifier (ALLOW_ALL_HOSTNAME_VERIFIER)，可以直接可以通过方式1进行攻击。</strong></p>
+<h3 id="Android-HTTPS防护"><a href="#Android-HTTPS防护" class="headerlink" title="Android HTTPS防护"></a>Android HTTPS防护</h3><p>详见<a href="#">Post not found: Android的HTTPS攻击与防护</a></p>
+<h3 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h3><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/xdyixia/p/11610102.html">HTTPS中CA证书的签发及使用过程</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/freekiteyu/article/details/76423436">一篇文章看明白 HTTP，HTTPS，SSL&#x2F;TLS 之间的关系</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/22260090/answer/648910720">CA 机构是如何保护自己私钥的？</a></p>
+<p><a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/zh-hans/%E5%9C%A8%E7%BA%BF%E8%AF%81%E4%B9%A6%E7%8A%B6%E6%80%81%E5%8D%8F%E8%AE%AE">OSCP在线证书状态协议-维基百科</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/lulianqi/p/10558719.html">HTTPS中间人攻击实践（原理·实践）</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/aptentity/article/details/71087607">Android HTTPS中间人劫持漏洞浅析</a></p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>详解CA证书</p><p><a href="http://blog.kalac.cn/2022/07/19/ca证书/">http://blog.kalac.cn/2022/07/19/ca证书/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>Hanani</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2022-07-19</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2022-07-21</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><!--!--></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3><div class="buttons is-centered"><a class="button donate" href="/" target="_blank" rel="noopener" data-type="buymeacoffee"><span class="icon is-small"><i class="fas fa-coffee"></i></span><span>送我杯咖啡</span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2022/08/12/Handler/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">Handler机制</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2022/06/22/%E7%B2%BE%E5%A6%99%E7%9A%84%E4%BD%8D%E8%BF%90%E7%AE%97/"><span class="level-item">精妙的位运算</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#什么是CA证书"><span class="level-left"><span class="level-item">1</span><span class="level-item">什么是CA证书</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#证书的签发过程"><span class="level-left"><span class="level-item">1.1</span><span class="level-item">证书的签发过程</span></span></a></li><li><a class="level is-mobile" href="#证书的认证过程"><span class="level-left"><span class="level-item">1.2</span><span class="level-item">证书的认证过程</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#OCSP装订"><span class="level-left"><span class="level-item">1.2.1</span><span class="level-item">OCSP装订</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="#认证链"><span class="level-left"><span class="level-item">2</span><span class="level-item">认证链</span></span></a></li><li><a class="level is-mobile" href="#交叉认证"><span class="level-left"><span class="level-item">3</span><span class="level-item">交叉认证</span></span></a></li><li><a class="level is-mobile" href="#不同级别的CA证书"><span class="level-left"><span class="level-item">4</span><span class="level-item">不同级别的CA证书</span></span></a></li><li><a class="level is-mobile" href="#自签证书"><span class="level-left"><span class="level-item">5</span><span class="level-item">自签证书</span></span></a></li><li><a class="level is-mobile" href="#HTTPS的中间人攻击"><span class="level-left"><span class="level-item">6</span><span class="level-item">HTTPS的中间人攻击</span></span></a></li><li><a class="level is-mobile" href="#Android-HTTPS防护"><span class="level-left"><span class="level-item">7</span><span class="level-item">Android HTTPS防护</span></span></a></li><li><a class="level is-mobile" href="#参考文献"><span class="level-left"><span class="level-item">8</span><span class="level-item">参考文献</span></span></a></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Android/"><span class="tag">Android</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/JavaWeb/"><span class="tag">JavaWeb</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Unity/"><span class="tag">Unity</span><span class="tag">1</span></a></div></div></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/images/logo.png" alt="Hanani&#039;s blog" height="28"></a><p class="is-size-7"><span>&copy; 2022 Hanani</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>
